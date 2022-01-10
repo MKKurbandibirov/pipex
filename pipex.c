@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 13:25:52 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/09 19:31:41 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/10 11:08:01 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,8 @@ void	print_error(char *str)
 	exit(EXIT_FAILURE);
 }
 
-void	parser(t_pipex *pipex, char **envr)
+char	**find_path(char **envr)
 {
-	pipex->fd1 = open(pipex->argv[1], O_RDONLY);
-	if (pipex->fd1 < 0)
-		perror("Error");
-	pipex->fd2 = open(pipex->argv[4], O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
-	if (pipex->fd2 < 0)
-		perror("Error");
-	
 	int 	i;
 	char	*tmp;
 	char	**path;
@@ -45,12 +38,54 @@ void	parser(t_pipex *pipex, char **envr)
 		if (tmp)
 			break ;
 	}
+	if (!envr[i])
+		print_error("Error: no path in envr!");
 	path = ft_split(tmp + 5, ':');
-	
-	// printf("%s\n", path[0]);
-	// printf("%s\n", path[1]);
-	// printf("%s\n", path[2]);
-	// printf("%s\n", path[4]);
+	i = -1;
+	while (path[++i])
+		path[i] = ft_strjoin(path[i], "/");
+	return (path);
+}
+
+char	*identify_cmd(char *cmd, char **path)
+{
+	int		i;
+	char	*tmp;
+
+	i = -1;
+	while (path[++i])
+	{
+		tmp = ft_strjoin(path[i], cmd);
+		if (access(tmp, F_OK) == 0)
+		{
+			free(cmd);
+			return (tmp);
+		}
+		else
+			free(tmp);
+	}
+	return (NULL);
+}
+
+void	parser(t_pipex *pipex, char **envr)
+{
+	char	**path;
+	char	**cmd;
+
+	path = find_path(envr);
+	pipex->fd1 = open(pipex->argv[1], O_RDONLY);
+	if (pipex->fd1 < 0)
+		perror("Error");
+	pipex->fd2 = open(pipex->argv[4], O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
+	if (pipex->fd2 < 0)
+		perror("Error");
+	pipex->cmd1 = ft_split(pipex->argv[2], ' ');
+	(pipex->cmd1)[0] = identify_cmd(pipex->cmd1[0], path);
+	pipex->cmd2 = ft_split(pipex->argv[3], ' ');
+	(pipex->cmd2)[0] = identify_cmd(pipex->cmd2[0], path);
+	free_split(path);
+	if (!(pipex->cmd1 && pipex->cmd2))
+		print_error("Error: command not found!");
 }
 
 int	main(int argc, char **argv, char **envr)
@@ -61,6 +96,5 @@ int	main(int argc, char **argv, char **envr)
 		print_error("Error: Wrong executable pattern!");
 	pipex.argv = argv;
 	parser(&pipex, envr);
-	
 	return (0);
 }

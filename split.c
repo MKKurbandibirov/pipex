@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/18 12:38:29 by nfarfetc          #+#    #+#             */
-/*   Updated: 2022/01/09 19:27:58 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/10 10:54:47 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char	*allocate_word(char const *s, char c)
 	return (word);
 }
 
-static void	free_split(char **res)
+void	free_split(char **res)
 {
 	int	i;
 

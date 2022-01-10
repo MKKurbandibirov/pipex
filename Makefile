@@ -2,7 +2,7 @@ NAME		=	pipex
 
 #CHECK_NAME	=	checker
 
-#HEADER		=	push_swap.h
+#HEADER		=	pipex.h
 
 SRCS		=	pipex.c utils.c split.c
 
@@ -14,14 +14,14 @@ OBJS		=	$(SRCS:.c=.o)
 CC			=	gcc
 CFLAGS		=	-Wall -Wextra -Werror #-I$(HEADER)
 
-.PHONY		:	all bonus clean fclean re
+.PHONY		:	all clean fclean re
 
 all			:	$(NAME)
 
 #bonus		:
 #	@$(CC) $(CFLAGS) -o $(CHECK_NAME) $(CHECK_SRCS)
 
-%.o:			%.c $(HEADER)
+%.o:			%.c #$(HEADER)
 	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) 	:	$(OBJS)
