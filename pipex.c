@@ -6,13 +6,11 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 13:25:52 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/10 14:16:06 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/11 09:18:18 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-#include <stdio.h>
 
 void	print_error(char *str)
 {

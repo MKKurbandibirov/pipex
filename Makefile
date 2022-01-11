@@ -1,36 +1,37 @@
 NAME		=	pipex
 
-#CHECK_NAME	=	checker
-
-#HEADER		=	pipex.h
+NAME_B		=	pipex_bonus
 
 SRCS		=	pipex.c utils.c split.c
 
 OBJS		=	$(SRCS:.c=.o)
 				
-#CHECK_SRCS	=	checker.c validator.c validator_helper.c split.c initializer.c commands.c \
-				sorting.c methods.c commands_wrap.c settings.c utils_func.c get_next_line/*.c
-				
-CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror #-I$(HEADER)
+SRCS_B		=	pipex_bonus.c utils_bonus.c split_bonus.c
 
-.PHONY		:	all clean fclean re
+OBJS_B		=	$(SRCS_B:.c=.o)
+				
+CC			=	gcc -g 
+CFLAGS		=	-Wall -Wextra -Werror
+
+.PHONY		:	all bonus clean fclean re
 
 all			:	$(NAME)
 
-#bonus		:
-#	@$(CC) $(CFLAGS) -o $(CHECK_NAME) $(CHECK_SRCS)
+bonus		:	$(NAME_B)
 
-%.o:			%.c #$(HEADER)
+%.o:			%.c
 	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) 	:	$(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o  $(NAME)
 
+$(NAME_B)	:	$(OBJS_B)
+	@$(CC) $(CFLAGS) $(OBJS_B) -o  $(NAME_B)
+
 clean		:	
-	@rm -f $(OBJS)
+	@rm -f $(OBJS) $(OBJS_B)
 
 fclean		:	clean
-	@rm -f $(NAME) $(CHECK_NAME)
+	@rm -f $(NAME) $(NAME_B)
 
 re:			fclean all
