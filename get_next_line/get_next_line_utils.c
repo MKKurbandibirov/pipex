@@ -1,62 +1,69 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_bonus.c                                      :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/11 10:02:56 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/11 10:03:15 by magomed          ###   ########.fr       */
+/*   Created: 2021/10/19 11:17:44 by nfarfetc          #+#    #+#             */
+/*   Updated: 2022/01/12 11:58:25 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "get_next_line.h"
 
-int	ft_strlen(const char *c)
+char	*ft_strchr( char *str, int ch)
+{
+	int	i;
+
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == (char)ch)
+			return ((char *)(str + i));
+		i++;
+	}
+	if (str[i] == (char)ch)
+		return ((char *)(str + i));
+	return (NULL);
+}
+
+int	str_len(char *s)
 {
 	int	i;
 
 	i = 0;
-	while (c[i])
+	while (s[i])
 	{
 		i++;
 	}
 	return (i);
 }
 
-char	*ft_strnstr(const char *h, const char *n, int len)
+char	*checker(char *rem)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	if (!n[0])
-		return ((char *)h);
-	while (i < len && h[i])
+	if (!rem)
 	{
-		j = 0;
-		while (i + j < len && h[i + j] == n[j])
-		{
-			j++;
-		}
-		if (!n[j])
-			return ((char *)&h[i]);
-		i++;
+		rem = malloc(sizeof(char));
+		rem[0] = '\0';
 	}
-	return (NULL);
+	return (rem);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoinfree(char *s1, char *s2)
 {
 	char	*new;
 	int		i;
 	int		j;
 
+	s1 = checker(s1);
 	if (!(s1 && s2))
 		return (NULL);
-	new = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	new = malloc((str_len(s1) + str_len(s2) +1) * sizeof(char));
 	if (!new)
-		print_error("Error: malloc error!");
+		return (NULL);
 	i = 0;
 	j = 0;
 	while (s1[i])
@@ -65,5 +72,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[i])
 		new[j++] = s2[i++];
 	new[j] = '\0';
+	free(s1);
 	return (new);
 }

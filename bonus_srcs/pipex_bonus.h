@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 09:04:51 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/11 10:26:19 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/12 18:49:42 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <sys/wait.h>
+# include "../get_next_line/get_next_line.h"
 
 typedef struct s_pipex
 {
@@ -25,7 +26,6 @@ typedef struct s_pipex
 	pid_t	*pid;
 	int		*status;
 	int		file_fd[2];
-	int		has_del;
 	char	*del;
 	int		cmd_count;
 	char	**argv;
@@ -34,7 +34,7 @@ typedef struct s_pipex
 
 void	print_error(char *str);
 
-int	ft_strlen(const char *c);
+int		ft_strlen(const char *c);
 char	*ft_strnstr(const char *h, const char *n, int len);
 char	*ft_strjoin(char *s1, char *s2);
 char	**ft_split(char const *s, char c);

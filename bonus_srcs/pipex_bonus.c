@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 09:04:33 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/11 14:09:20 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/12 18:37:20 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ void    check_del(t_pipex *pipex)
 		pipex->file_fd[1] = open(pipex->argv[pipex->argc - 1], O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
 		if (pipex->file_fd[1] < 0)
 			print_error("Error: here_doc outfile error!");
-		// pipex->has_del = 1;
 		pipex->cmd_count = pipex->argc - 4;
 	}
 	else
@@ -136,7 +135,8 @@ void	fd_close(t_pipex *pipex)
 	{
 		close(pipex->pipe_fd[i]);
 	}
-	close(pipex->file_fd[0]);
+	if (!pipex->del)
+		close(pipex->file_fd[0]);
 	close(pipex->file_fd[1]);
 }
 
@@ -150,6 +150,60 @@ void	child_proc(int fd_in, int fd_out, char **cmd, t_pipex *pipex)
 	exit(EXIT_FAILURE);
 }
 
+void	f_multiple_pipex(t_pipex *pipex)
+{
+		int i;
+
+	i = -1;
+	while (++i < pipex->cmd_count - 1)
+		if (pipe(pipex->pipe_fd + i * 2) == -1)
+			print_error("Error: pipe error!");
+	i = -1;
+	while (++i < pipex->cmd_count)
+	{
+		pipex->pid[i] = fork();
+		if (pipex->pid[i] == -1)
+			print_error("Error: fork error!");
+		if (pipex->pid[i] == 0)
+		{
+			if (i == 0)
+				child_proc(pipex->file_fd[0], pipex->pipe_fd[i * 2 + 1], pipex->cmd[i], pipex);
+			else if (i == pipex->cmd_count - 1)
+				child_proc(pipex->pipe_fd[2 * i - 2], pipex->file_fd[1], pipex->cmd[i], pipex);
+			else
+				child_proc(pipex->pipe_fd[2 * i - 2], pipex->pipe_fd[i * 2 + 1], pipex->cmd[i], pipex);
+		}
+	}
+	i = -1;
+	fd_close(pipex);
+	while (++i < pipex->cmd_count)
+		waitpid(pipex->pid[i], &pipex->status[i], WNOHANG);
+}
+
+void	heredoc_out(t_pipex *pipex)
+{
+	char	*line;
+	char	*str;
+	int		i;
+
+	str = NULL;
+	i = -1;
+	while(++i < pipex->cmd_count - 1)
+	{
+		str = ft_strjoinfree(str, "pipe ");
+	}
+	str = ft_strjoinfree(str, "heredoc> ");
+	while(1)
+	{
+		write(1, str, ft_strlen(str));
+		line = get_next_line(0);
+		if (!line)
+			print_error("Error: gnl error for here_doc!");
+		if (ft_strnstr(line, pipex->del, ft_strlen(pipex->del)))
+			break ;
+		free(line);
+	}
+}
 
 int	main(int argc, char **argv, char **envr)
 {
@@ -158,32 +212,12 @@ int	main(int argc, char **argv, char **envr)
 	pipex.argv = argv;
 	pipex.argc = argc;
 	parser(envr, &pipex);
-
-	int i;
-
-	i = -1;
-	while (++i < pipex.cmd_count - 1)
-		if (pipe(pipex.pipe_fd + i * 2) == -1)
-			print_error("Error: pipe error!");
-	i = -1;
-	while (++i < pipex.cmd_count)
+	if (!pipex.del)
+		f_multiple_pipex(&pipex);
+	else
 	{
-		pipex.pid[i] = fork();
-		if (pipex.pid[i] == -1)
-			print_error("Error: fork error!");
-		if (pipex.pid[i] == 0)
-		{
-			if (i == 0)
-				child_proc(pipex.file_fd[0], pipex.pipe_fd[i * 2 + 1], pipex.cmd[i], &pipex);
-			else if (i == pipex.cmd_count - 1)
-				child_proc(pipex.pipe_fd[2 * i - 2], pipex.file_fd[1], pipex.cmd[i], &pipex);
-			else
-				child_proc(pipex.pipe_fd[2 * i - 2], pipex.pipe_fd[i * 2 + 1], pipex.cmd[i], &pipex);
-		}
+		f_multiple_pipex(&pipex);
+		heredoc_out(&pipex);
 	}
-	i = -1;
-	fd_close(&pipex);
-	while (++i < pipex.cmd_count)
-		waitpid(pipex.pid[i], &pipex.status[i], WNOHANG);
 	return (0);
 }

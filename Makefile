@@ -1,12 +1,17 @@
 NAME		=	pipex
 
+DIR			=	./mandatory_srcs
+
 NAME_B		=	pipex_bonus
 
-SRCS		=	pipex.c utils.c split.c
+DIR_B		=	./bonus_srcs
+
+SRCS		=	$(DIR)/pipex.c $(DIR)/utils.c $(DIR)/split.c
 
 OBJS		=	$(SRCS:.c=.o)
 				
-SRCS_B		=	pipex_bonus.c utils_bonus.c split_bonus.c
+SRCS_B		=	$(DIR_B)/pipex_bonus.c $(DIR_B)/utils_bonus.c $(DIR_B)/split_bonus.c \
+				get_next_line/get_next_line.c get_next_line/get_next_line_utils.c
 
 OBJS_B		=	$(SRCS_B:.c=.o)
 				

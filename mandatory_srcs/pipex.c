@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/09 13:25:52 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/11 09:18:18 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/12 18:38:53 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ static void	parser(t_pipex *pipex, char **envr)
 	path = find_path(envr);
 	pipex->file_fd[0] = open(pipex->argv[1], O_RDONLY);
 	if (pipex->file_fd[0] < 0)
-		perror("Error");
+		print_error("Error: infile error!");
 	pipex->file_fd[1] = open(pipex->argv[4], O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
 	if (pipex->file_fd[1] < 0)
-		perror("Error");
+		print_error("Error: outfile error!");
 	pipex->cmd1 = ft_split(pipex->argv[2], ' ');
 	(pipex->cmd1)[0] = identify_cmd(pipex->cmd1[0], path);
 	pipex->cmd2 = ft_split(pipex->argv[3], ' ');
