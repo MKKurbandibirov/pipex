@@ -6,7 +6,7 @@
 /*   By: magomed <magomed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 09:04:51 by magomed           #+#    #+#             */
-/*   Updated: 2022/01/12 18:49:42 by magomed          ###   ########.fr       */
+/*   Updated: 2022/01/12 18:55:46 by magomed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ typedef struct s_pipex
 }	t_pipex;
 
 void	print_error(char *str);
+
+void	parser(char **envr, t_pipex *pipex);
+
+void	f_multiple_pipex(t_pipex *pipex);
+void	heredoc_out(t_pipex *pipex);
 
 int		ft_strlen(const char *c);
 char	*ft_strnstr(const char *h, const char *n, int len);
