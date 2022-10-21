@@ -47,7 +47,7 @@ More information about the project can be found at  [**subject**](https://github
 To check how it works, you can compare the behavior of the program you wrote with that of any shell, in this example -- shell:
 	
 
-	 1. pipex ./pipex "input_file" "tr a b" "tr b c" "output_file"
+	 1.     pipex ./pipex "input_file" "tr a b" "tr b c" "output_file"
 		shell < input_file tr a b | tr b c > output_file
 	 2.	pipex ./pipex "input_file" "ls -l" "wc -l" "output_file"
 		shell < input_file ls -l | wc -l > output_file
